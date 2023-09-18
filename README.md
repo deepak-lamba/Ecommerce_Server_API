@@ -2,7 +2,8 @@
 
 ## Overview
 This is the ecommerse server made as per the following assignment:
-![268768867-90a02476-068e-479b-a9db-be63dcb20762](https://github.com/deepak-lamba/Ecommerce_API/assets/135522135/3001575d-e85e-4156-9840-058c8b72af33)
+![268768867-90a02476-068e-479b-a9db-be63dcb20762](https://github.com/deepak-lamba/Ecommerce_Server_API/assets/135522135/f0410fd3-6be9-455d-9c30-62ddc2991b9e)
+
 
 
 ## Commands
@@ -73,5 +74,6 @@ This is the ecommerse server made as per the following assignment:
 1. Writing the API on Swagger editor, and autogenerating the corresponding Nodejs server codebase. Insight: While it may matter less for smaller projects like this, it is better to autogenerate codebase to ensure consistency among the API functionality, server/client implementations and documentation. However, it is better to use the standard [codegen utility from OpenApi](https://github.com/OpenAPITools/openapi-generator/tree/master/samples/server/petstore/nodejs-express-server) than the one in Swagger editor since the latter has [longstanding unresolved issues regarding middleware addition](https://github.com/bug-hunters/oas3-tools/issues/41), because of which the authentication step had to be individually prepending for protected endpoints in resp. controllers, instead of easily adding it once as a middleware.
 2. Added business logic for each endpoint in [service](service) and tested using [mock local database](service/mock_database/mock_db.js). Having latter could also help with writing isolated e2e tests just for business logic.
 3. Added mongodb to the project, the database state looks as follows:
-4. ![268768826-31daa732-2bb5-4cb7-9e6c-cafe79ce6883](https://github.com/deepak-lamba/Ecommerce_API/assets/135522135/aa9ab4d9-5cdd-43a7-b5ff-42a2f8e8bd40)
+![268768826-31daa732-2bb5-4cb7-9e6c-cafe79ce6883](https://github.com/deepak-lamba/Ecommerce_Server_API/assets/135522135/4e007b8a-22b7-4022-8401-9566d42838ff)
+
 
