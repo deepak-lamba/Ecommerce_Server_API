@@ -1,0 +1,602 @@
+openapi: 3.0.0
+info:
+  title: Ecommerse API
+  description: |
+    This is an example of an Ecommerse server.
+  contact:
+    email: deepak.lamba.iit@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: /docs
+servers:
+- url: https://virtserver.swaggerhub.com/DL11_1/Ecommerce_API/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8080/
+  description: Local hosting
+tags:
+- name: category
+  description: Everything about Categories
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: product
+  description: Everything about Products
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: cart
+  description: All endpoints for cart management
+- name: order
+  description: Everything about orders
+- name: user
+  description: Operations about user
+  externalDocs:
+    description: Find out more about our store
+    url: http://swagger.io
+paths:
+  /categories:
+    get:
+      tags:
+      - category
+      summary: List all categories
+      operationId: getCategories
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+      x-swagger-router-controller: Category
+  /products:
+    get:
+      tags:
+      - product
+      summary: Finds products with optional categoryId based filtering
+      operationId: getProducts
+      parameters:
+      - name: categoryId
+        in: query
+        description: Category id to be considered for filter
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid category id
+      x-swagger-router-controller: Product
+  /product/{productId}:
+    get:
+      tags:
+      - product
+      summary: Get details of product with given id
+      operationId: getProduct
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to fetch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid product id
+      x-swagger-router-controller: Product
+  /cart:
+    get:
+      tags:
+      - cart
+      summary: List all product orders in the cart
+      operationId: getCart
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductOrder'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductOrder'
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Cart
+  /cart/product/{productId}:
+    post:
+      tags:
+      - cart
+      summary: Add specified product to cart
+      operationId: addProductToCart
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to fetch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: Successfully Added
+        "400":
+          description: Invalid product id
+        "409":
+          description: Product not available
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Cart
+    delete:
+      tags:
+      - cart
+      summary: Delete product from cart
+      operationId: deleteProductFromCart
+      parameters:
+      - name: productId
+        in: path
+        description: id of product that needs to be updated
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Product not in the cart
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Cart
+    patch:
+      tags:
+      - cart
+      summary: Update product quantity with properties to be changed
+      operationId: updateProductInCart
+      parameters:
+      - name: productId
+        in: path
+        description: Id of product whose quantity to be changed
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product_productId_body'
+      responses:
+        "204":
+          description: "Updated product properties, mainly quantity"
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Cart
+  /order:
+    post:
+      tags:
+      - order
+      summary: Create/place an order with products in the cart
+      operationId: orderCart
+      responses:
+        "409":
+          description: "Cart empty, nothing to order"
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Order
+  /orders:
+    get:
+      tags:
+      - order
+      summary: List all orders
+      operationId: getOrderHistory
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+                x-content-type: application/json
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Order
+  /order/{orderId}:
+    get:
+      tags:
+      - order
+      summary: Get order details by its id
+      operationId: getOrder
+      parameters:
+      - name: orderId
+        in: path
+        description: ID of order to fetch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: Order
+  /user:
+    post:
+      tags:
+      - user
+      summary: Creates/registers/signs up a new user as per provided details
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        default:
+          description: successful operation
+      x-swagger-router-controller: User
+  /user/login:
+    get:
+      tags:
+      - user
+      summary: Logs user into the system
+      operationId: loginUser
+      security:
+      - BasicAuth: []
+      responses:
+        "200":
+          description: Successful authentication
+          headers:
+            Set-Cookie:
+              description: Set refresh token as HTTP-only cookie.
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: refreshToken=<token-value>; HttpOnly; Secure; SameSite=Strict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Invalid username/password supplied
+        "401":
+          description: Unauthorized
+      x-swagger-router-controller: User
+  /user/{userId}/logout:
+    get:
+      tags:
+      - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      parameters:
+      - name: userId
+        in: path
+        description: Id of user to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: Successfully logged out and invalidated refresh token
+        "401":
+          description: Unauthorized
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: User
+  /user/{userId}:
+    get:
+      tags:
+      - user
+      summary: Get user by id
+      operationId: getUser
+      parameters:
+      - name: userId
+        in: path
+        description: Id of user to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: User
+    delete:
+      tags:
+      - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+      - name: userId
+        in: path
+        description: Id of user to be deleted
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      responses:
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: User
+    patch:
+      tags:
+      - user
+      summary: Update user with specified properties asked to be changed
+      operationId: updateUser
+      parameters:
+      - name: userId
+        in: path
+        description: Id of user to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/Id'
+      requestBody:
+        description: Provide user properties to be changed and their new values
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_userId_body'
+      responses:
+        "204":
+          description: Updated user properties
+      security:
+      - BearerAuth: []
+      x-swagger-router-controller: User
+components:
+  schemas:
+    Id:
+      type: string
+    Category:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+      example:
+        name: name
+        id: 1
+      xml:
+        name: Category
+    Product:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        categoryId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        price:
+          type: number
+        description:
+          type: string
+        available:
+          type: boolean
+          default: false
+      example:
+        price: 6.027456183070403
+        available: false
+        description: description
+        id: 1
+        title: title
+      xml:
+        name: Product
+    ProductOrderImmutableProperties:
+      type: object
+      properties:
+        productId:
+          readOnly: true
+          allOf:
+          - $ref: '#/components/schemas/Id'
+      xml:
+        name: ProductOrderImmutableProperties
+    ProductOrderMutableProperties:
+      type: object
+      properties:
+        quantity:
+          minimum: 0
+          type: integer
+          format: int64
+      xml:
+        name: ProductOrderMutableProperties
+    ProductOrder:
+      xml:
+        name: ProductOrder
+      allOf:
+      - $ref: '#/components/schemas/ProductOrderImmutableProperties'
+      - $ref: '#/components/schemas/ProductOrderMutableProperties'
+    Order:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        quantity:
+          type: integer
+          format: int32
+        orderDate:
+          type: string
+          format: date-time
+        shipDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          description: Order Status
+          enum:
+          - placed
+          - approved
+          - delivered
+        complete:
+          type: boolean
+          default: false
+      example:
+        quantity: 6
+        id: 1
+        shipDate: 2000-01-23T04:56:07.000+00:00
+        complete: false
+        orderDate: 2000-01-23T04:56:07.000+00:00
+        status: placed
+      xml:
+        name: Order
+    UserImmutableProperties:
+      type: object
+      properties:
+        id:
+          readOnly: true
+          allOf:
+          - $ref: '#/components/schemas/Id'
+      xml:
+        name: UserImmutableProperties
+    UserMutableProperties:
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+      xml:
+        name: UserMutableProperties
+    UserRequiredProperties:
+      required:
+      - email
+      - password
+      - username
+      type: object
+    User:
+      allOf:
+      - $ref: '#/components/schemas/UserImmutableProperties'
+      - $ref: '#/components/schemas/UserMutableProperties'
+      - $ref: '#/components/schemas/UserRequiredProperties'
+    product_productId_body:
+      allOf:
+      - $ref: '#/components/schemas/ProductOrderMutableProperties'
+    inline_response_200:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: This token should be used in the Bearer Authorization header
+            for accessing protected resources.
+      example:
+        accessToken: accessToken
+    user_userId_body:
+      allOf:
+      - $ref: '#/components/schemas/UserMutableProperties'
+  requestBodies:
+    CreateUser:
+      description: Create a new user
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/UserRequiredProperties'
+            - $ref: '#/components/schemas/UserMutableProperties'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,49 @@
+{
+	"categories": [
+		{
+			"name": "cat1",
+			"id": 1
+		},
+		{
+			"name": "cat2",
+			"id": 2
+		}
+	],
+	"products": [
+		{
+			"price": 1.02,
+			"available": false,
+			"description": "description",
+			"id": 1,
+			"categoryId": 1,
+			"title": "title"
+		},
+		{
+			"price": 2.02,
+			"available": false,
+			"description": "description",
+			"id": 2,
+			"categoryId": 2,
+			"title": "title"
+		},
+		{
+			"price": 3.02,
+			"available": false,
+			"description": "description",
+			"id": 3,
+			"categoryId": 2,
+			"title": "title"
+		}
+	],
+	"users": [
+		{
+			"username": "dl",
+			"firstName": "deepak",
+			"lastName": "lamba",
+			"email": "dl11@iitbbs.ac.in",
+			"password": "$2b$10$Ma947Nnm28NSaU2y8uBZ9Of7aalqtsII9mYD7IgrxhitQpdFAteIO",
+			"phone": "+91987654321",
+			"id": "59df29e7-7cf3-48b7-8af6-70cc3394fb80"
+		}
+	]
+}
