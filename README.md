@@ -1,4 +1,4 @@
-# Ecommerse server
+# Ecommerce server
 
 ## Overview
 This is the ecommerse server made as per the following assignment:
